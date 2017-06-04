@@ -44,6 +44,7 @@
 <script type="text/javascript" src="bvalidator-dist/themes/presenters/default.js"></script>
 <script type="text/javascript" src="bvalidator-dist/themes/gray2/gray2.js"></script>
 <script type="text/javascript" src="bvalidator-dist/themes/gray3/gray3.js"></script>
+<script type="text/javascript" src="bvalidator-dist/themes/gray4/gray4.js"></script>
 <script type="text/javascript" src="bvalidator-dist/themes/orange/orange.js"></script>
 <script type="text/javascript" src="bvalidator-dist/themes/postit/postit.js"></script>
 <script type="text/javascript" src="bvalidator-dist/themes/red/red.js"></script>
@@ -64,6 +65,7 @@
 <link href="bvalidator-dist/themes/bslikert/bslikert.css" rel="stylesheet"/>
 <link href="bvalidator-dist/themes/bslikerc/bslikerc.css" rel="stylesheet"/>
 <link href="bvalidator-dist/themes/gray3/gray3.css" rel="stylesheet"/>
+<link href="bvalidator-dist/themes/gray4/gray4.css" rel="stylesheet"/>
 <link href="bvalidator-dist/themes/insert/insert.css" rel="stylesheet"/>
 <link href="bvalidator-dist/themes/group/group.css" rel="stylesheet"/>
 <script type="text/javascript">
@@ -98,7 +100,7 @@
             <h1 class="bdocs-section-header" id="setup"> <span class="glyphicon bdocs-h1-icon glyphicon-wrench"></span> Setup</h1>
             <div class="bdocs-section">
                 <h3>Download</h3>
-                <p> Download bValidator from <a href="http://bmauser.github.io/bvalidator/archives/bvalidator-<%= version; %>-dist.zip" target="_blank">here</a> (currently v<%= version; %>) </p>
+                <p> Download bValidator from <a href="http://bmauser.github.io/bvalidator/archives/bvalidator-<%= version; %>-dist.zip" target="_blank"><strong>here</strong></a> (currently v<%= version; %>) </p>
                 <p>Or install with Bower:</p>
                 <pre class="bdocs-highlight-source"><%= include('pre/setup-bower.html'); %></pre>
                 <p>Or install with npm:</p>
@@ -266,6 +268,11 @@
                         <td>If <code>true</code>, bValidator will validate HTML5 
                             input types: <code>email</code>, <code>url</code>, <code>number</code> <br>
                             and inputs with attributes: <code>min</code>, <code>max</code>, <code>minlength</code>, <code>maxlength</code>, <code>pattern</code>, <code>required</code>.</td>
+                    </tr>
+                    <tr id="forceValidationResult">
+                        <td class="bdocs-option-name">forceValidationResult</td>
+                        <td><code>null</code></td>
+                        <td>Set to <code>true</code> or <code>false</code> to force validation result for all  inputs inside the form.</td>
                     </tr>
                 </table>
                 <p> Also see <a href="#themeOptions">theme options</a>.</p>
@@ -490,7 +497,7 @@
                         <td><ol>
                                 <li>jQuery object containing inputs to validate  (optional)</li>
                             </ol></td>
-                        <td>Invokes validation.</td>
+                        <td>Invokes validation. Returns <code>true</code> if all fields are valid, or <code>false</code> if there are some validation errors.</td>
                     </tr>
                     <tr>
                         <td class="bdocs-option-name">isValid</td>
@@ -686,9 +693,11 @@
                 
                 <!-- example -->
                 
-                <h2 id="exampleValidateDiv">Validate <span class="bdocs-mono">&lt;div&gt;</span> element</h2>
+                <h2 id="exampleValidateDiv">Validate any element</h2>
                 <p> Container element doesn't have to be a <code class="html">&lt;form&gt;</code>. You can trigger validation with JavaScript: </p>
-                <%- include('examples/example.html', {file: 'div-instance.html'}); %>
+                <%- include('examples/example.html', {file: 'validate-any1.html'}); %>
+                <p> Any element can be validated like an <code class="html">&lt;input&gt;</code>:</p>
+                <%- include('examples/example.html', {file: 'validate-any2.html'}); %>
                 
                 <!-- example -->
                 
@@ -705,6 +714,14 @@
                 <%- include('examples/example.html', {file: 'just-messages.html'}); %>
                 <p> In this example no validation is done, only  messages are displayed.
                     Messages can be displayed on any element on the page, it doesn't have to be an input and it doesn't have to be inside the container element on which bValidator is bound. </p>
+                
+                <!-- example -->
+                
+                <h2 id="exampleForceValidation">Forcing validation result</h2>
+                <p> Sometimes after bValidator is initialized you may want to disable validation for a <code class="html">&lt;form&gt;</code> or an <code class="html">&lt;input&gt;</code> or you want to force them invalid. You can do it by adding <code class="attr">data-bvalidator-return</code> attribute with value <code>true</code> or <code>false</code>. Put  the  attribute on the <code class="html">&lt;form&gt;</code>  if you want to force validation result for all inputs inside the form.</p>
+                <%- include('examples/example.html', {file: 'force-validation-result.html'}); %>
+                <p>You can also force validation result for  all fields inside the <code class="html">&lt;form&gt;</code> with  <code><a href="#forceValidationResult">forceValidationResult</a></code> option:</p>
+                <pre class="bdocs-highlight-source"><%= include('pre/examples-force-validation-result.html'); %></pre>
                 
                 <!-- example -->
                 
@@ -745,7 +762,8 @@
                 <p> That is the same as setting <code><a href="#useTheme">useTheme</a></code> option with <code class="attr">data-bvalidator-option-use-theme</code> attribute. </p>
                 <p> To change the theme only for the specific input field, put <code class="attr">data-bvalidator-theme</code> attribute on the <code class="html">&lt;input&gt;</code>: </p>
                 <pre class="bdocs-highlight-source"><%= include('pre/themes-attr-input.html'); %></pre>
-                <p> With JavaScript, you can set the default theme  by changing <code><a href="#useTheme">useTheme</a></code> option. </p>
+                <p> With JavaScript, you can set the default theme  by changing <code><a href="#useTheme">useTheme</a></code> option. For example, you can set the default theme depending on the screen width and for small-screen devices choose   <span id="result_box" lang="en">more adapted theme:</span></p>
+                <pre class="bdocs-highlight-source"><%= include('pre/themes-options-size-theme.html'); %></pre>
                 <h2 id="themeOptions">Theme examples and options:</h2>
                 <p> Options  for themes can be   set by <code class="attr">data-bvalidator-theme-<em>optionName</em></code> attribute or by JavaScript. </p>
                 <p> You can set <code class="attr">data-bvalidator-theme-<em>optionName</em></code> attribute on the <code class="html">&lt;form&gt;</code> element to change the option for all the fields in the form: </p>
@@ -1053,6 +1071,14 @@
                 <p> This theme has the same options as the <a href="#themeGrayOptions"><span class="bdocs-mono">gray</span></a> theme, see the theme .js file for default values. </p>
                 <h4>Files to include for <span class="bdocs-mono">gray3</span> theme:</h4>
                 <pre class="bdocs-highlight-source"><%= include('pre/theme-gray3-include.html'); %></pre>
+ 
+                 <!-- theme example -->
+                
+                <h2 id="themeGray4">gray4</h2>
+                <%- include('examples/example.html', {file: 'theme-gray4.html', editable: false, themeExample: true}); %>
+                <p> This theme has the same options as the <a href="#themeGrayOptions"><span class="bdocs-mono">gray</span></a> theme, see the theme .js file for default values. </p>
+                <h4>Files to include for <span class="bdocs-mono">gray4</span> theme:</h4>
+                <pre class="bdocs-highlight-source"><%= include('pre/theme-gray4-include.html'); %></pre>
                 
                 <!-- theme example -->
                 
@@ -1153,15 +1179,16 @@
                                     <li><a href="#" data-bvd-theme="gray"> <span class="bdocs-mono">gray</span> </a></li>
                                     <li><a href="#" data-bvd-theme="bs3popover"> <span class="bdocs-mono">bs3popover</span> </a></li>
                                     <li><a href="#" data-bvd-theme="bs3tooltip"> <span class="bdocs-mono">bs3tooltip</span> </a></li>
+                                    <li><a href="#" data-bvd-theme="insert"> <span class="bdocs-mono">insert</span> </a></li>
+                                    <li><a href="#" data-bvd-theme="group"> <span class="bdocs-mono">group</span> </a></li>
                                     <li><a href="#" data-bvd-theme="gray2"> <span class="bdocs-mono">gray2</span> </a></li>
                                     <li><a href="#" data-bvd-theme="gray3"> <span class="bdocs-mono">gray3</span> </a></li>
+                                    <li><a href="#" data-bvd-theme="gray4"> <span class="bdocs-mono">gray4</span> </a></li>
                                     <li><a href="#" data-bvd-theme="orange"> <span class="bdocs-mono">orange</span> </a></li>
                                     <li><a href="#" data-bvd-theme="postit"> <span class="bdocs-mono">postit</span> </a></li>
                                     <li><a href="#" data-bvd-theme="red"> <span class="bdocs-mono">red</span> </a></li>
                                     <li><a href="#" data-bvd-theme="bslikerc"> <span class="bdocs-mono">bslikerc</span> </a></li>
                                     <li><a href="#" data-bvd-theme="bslikert"> <span class="bdocs-mono">bslikert</span> </a></li>
-                                    <li><a href="#" data-bvd-theme="insert"> <span class="bdocs-mono">insert</span> </a></li>
-                                    <li><a href="#" data-bvd-theme="group"> <span class="bdocs-mono">group</span> </a></li>
                                     <li class="divider" role="separator"></li>
                                     <li><a href="#" data-bvd-theme-option-close="1">No close icon</a></li>
                                 </ul>
@@ -1173,9 +1200,10 @@
                             <li><a href="#exampleCheckboxRadio">Checkboxes and radio buttons</a></li>
                             <li><a href="#exampleDynamicForm">Dynamic form</a></li>
                             <li><a href="#exampleHtml5Form">HTML5 form</a></li>
-                            <li><a href="#exampleValidateDiv">Validate <span class="bdocs-mono">&lt;div&gt;</span> element</a></li>
+                            <li><a href="#exampleValidateDiv">Validate any element</a></li>
                             <li><a href="#exampleMoreInstances">More instances</a></li>
                             <li><a href="#exampleJustDisplayingMessages">Just displaying messages</a></li>
+                            <li><a href="#exampleForceValidation">Forcing validation result</a></li>
                             <li><a href="#exampleModifiers">Modifiers</a></li>
                             <li><a href="#exampleServerSideValidation">Server side validation</a></li>
                         </ul>
@@ -1190,6 +1218,7 @@
                             <li><a href="#themeGroup">group</a></li>
                             <li><a href="#themeGray2">gray2</a></li>
                             <li><a href="#themeGray3">gray3</a></li>
+                            <li><a href="#themeGray4">gray4</a></li>
                             <li><a href="#themePostit">postit</a></li>
                             <li><a href="#themeOrange">orange</a></li>
                             <li><a href="#themeRed">red</a></li>
